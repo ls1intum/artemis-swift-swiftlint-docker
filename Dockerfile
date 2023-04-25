@@ -16,8 +16,7 @@ ARG SWIFTLINT_VERSION=0.50.0
 RUN git checkout ${SWIFTLINT_VERSION}
 
 RUN swift package update
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker 
--L/usr/lib/swift/linux"
+ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
 RUN swift build ${SWIFT_FLAGS} --product swiftlint
 RUN mkdir -p /executables
 RUN install -v `swift build ${SWIFT_FLAGS} --show-bin-path`/swiftlint /executables
@@ -39,4 +38,3 @@ COPY --from=builder /executables/* /usr/bin
 # Print Installed Swift & SwiftLint Version
 RUN swift --version
 RUN swiftlint version
-
