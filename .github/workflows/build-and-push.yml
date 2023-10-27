@@ -12,8 +12,8 @@ on:
       - created
 
 env:
-  SWIFT_VERSION: 5.9
-  SWIFTLINT_VERSION: 0.52.4
+  SWIFT_VERSION: 5.9.1
+  SWIFTLINT_VERSION: 0.53.0
 
 jobs:
   buildx:
