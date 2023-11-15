@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/realm/SwiftLint.git
 WORKDIR /SwiftLint
 # Defaul SwiftLint version - will be overwritten by the GH action
-ARG SWIFTLINT_VERSION=0.50.0
+ARG SWIFTLINT_VERSION=0.53.0
 RUN git checkout ${SWIFTLINT_VERSION}
 
 RUN swift package update
