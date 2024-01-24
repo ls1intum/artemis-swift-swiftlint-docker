@@ -12,8 +12,8 @@ on:
       - created
 
 env:
-  SWIFT_VERSION: 5.9.1
-  SWIFTLINT_VERSION: 0.53.0
+  SWIFT_VERSION: 5.9.2
+  SWIFTLINT_VERSION: 0.54.0
 
 permissions:
   contents: read
