@@ -12,8 +12,8 @@ on:
       - created
 
 env:
-  SWIFT_VERSION: 6.0.0
-  SWIFTLINT_VERSION: 0.57.0
+  SWIFT_VERSION: 6.2
+  SWIFTLINT_VERSION: 0.63.1
 
 permissions:
   contents: read
@@ -73,8 +73,8 @@ jobs:
         with:
           context: .
           build-args: |
-            "BUILDER_IMAGE=swift:${{ env.SWIFT_VERSION }}-focal"
-            "RUNTIME_IMAGE=swift:${{ env.SWIFT_VERSION }}-focal"
+            "BUILDER_IMAGE=swift:${{ env.SWIFT_VERSION }}-jammy"
+            "RUNTIME_IMAGE=swift:${{ env.SWIFT_VERSION }}-jammy"
             "SWIFTLINT_VERSION=${{ env.SWIFTLINT_VERSION }}"
           tags: |
             ls1tum/artemis-swift-swiftlint-docker:swift${{ env.SWIFT_VERSION }}
