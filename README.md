@@ -6,7 +6,7 @@ Docker image with Swift and SwiftLint for programming exercises on [Artemis](htt
 
 - **Swift**: 6.2
 - **SwiftLint**: 0.63.1
-- **Base**: Ubuntu 22.04 (Jammy)
+- **Base**: Ubuntu 24.04 (Noble)
 
 ## Pull
 

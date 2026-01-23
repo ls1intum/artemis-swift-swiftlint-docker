@@ -12,8 +12,8 @@ on:
       - created
 
 env:
-  SWIFT_VERSION: 6.2
-  SWIFTLINT_VERSION: 0.63.1
+  SWIFT_VERSION: "6.2"
+  SWIFTLINT_VERSION: "0.63.1"
 
 permissions:
   contents: read
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Compute Tag
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: compute-tag
         with:
           result-encoding: string
@@ -43,15 +43,14 @@ jobs:
             }
             return "FALSE";
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Docker Login
-        id: docker-login
         run: |
           docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: ${{ steps.compute-tag.outputs.result != 'FALSE' }}
         with:
           registry: ghcr.io
@@ -62,26 +61,20 @@ jobs:
         uses: docker/setup-qemu-action@v3
 
       - name: Install Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@master
-        with:
-          version: latest
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build Image and Push to GitHub Container Registry and DockerHub
-        uses: docker/build-push-action@v4
+      - name: Build Image and Push
+        uses: docker/build-push-action@v6
         if: ${{ steps.compute-tag.outputs.result != 'FALSE' }}
         with:
           context: .
           build-args: |
-            "BUILDER_IMAGE=swift:${{ env.SWIFT_VERSION }}-jammy"
-            "RUNTIME_IMAGE=swift:${{ env.SWIFT_VERSION }}-jammy"
-            "SWIFTLINT_VERSION=${{ env.SWIFTLINT_VERSION }}"
+            SWIFT_IMAGE=swift:${{ env.SWIFT_VERSION }}-noble
+            SWIFTLINT_VERSION=${{ env.SWIFTLINT_VERSION }}
           tags: |
             ls1tum/artemis-swift-swiftlint-docker:swift${{ env.SWIFT_VERSION }}
-            ls1tum/artemis-swift-swiftlint-docker:swiftlint${{ env.SWIFTLINT_VERSION }}
             ls1tum/artemis-swift-swiftlint-docker:${{ steps.compute-tag.outputs.result }}
             ghcr.io/ls1intum/artemis-swift-swiftlint-docker:swift${{ env.SWIFT_VERSION }}
-            ghcr.io/ls1intum/artemis-swift-swiftlint-docker:swiftlint${{ env.SWIFTLINT_VERSION }}
             ghcr.io/ls1intum/artemis-swift-swiftlint-docker:${{ steps.compute-tag.outputs.result }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
