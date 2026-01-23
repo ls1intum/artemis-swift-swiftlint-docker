@@ -73,8 +73,10 @@ jobs:
             SWIFTLINT_VERSION=${{ env.SWIFTLINT_VERSION }}
           tags: |
             ls1tum/artemis-swift-swiftlint-docker:swift${{ env.SWIFT_VERSION }}
+            ls1tum/artemis-swift-swiftlint-docker:swiftlint${{ env.SWIFTLINT_VERSION }}
             ls1tum/artemis-swift-swiftlint-docker:${{ steps.compute-tag.outputs.result }}
             ghcr.io/ls1intum/artemis-swift-swiftlint-docker:swift${{ env.SWIFT_VERSION }}
+            ghcr.io/ls1intum/artemis-swift-swiftlint-docker:swiftlint${{ env.SWIFTLINT_VERSION }}
             ghcr.io/ls1intum/artemis-swift-swiftlint-docker:${{ steps.compute-tag.outputs.result }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
