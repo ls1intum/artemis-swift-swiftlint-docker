@@ -1,6 +1,6 @@
 # Set Default Arguments - will be overwritten by the GH action
-ARG BUILDER_IMAGE=swift:focal
-ARG RUNTIME_IMAGE=swift:focal
+ARG BUILDER_IMAGE=swift:jammy
+ARG RUNTIME_IMAGE=swift:jammy
 
 # builder image
 FROM ${BUILDER_IMAGE} AS builder
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/realm/SwiftLint.git
 WORKDIR /SwiftLint
 # Defaul SwiftLint version - will be overwritten by the GH action
-ARG SWIFTLINT_VERSION=0.53.0
+ARG SWIFTLINT_VERSION=0.63.1
 RUN git checkout ${SWIFTLINT_VERSION}
 
 RUN swift package update
