@@ -1,40 +1,24 @@
-# Set Default Arguments - will be overwritten by the GH action
-ARG BUILDER_IMAGE=swift:focal
-ARG RUNTIME_IMAGE=swift:focal
+# Swift with SwiftLint for Artemis programming exercises
+# Using noble (Ubuntu 24.04) for GLIBC 2.38+ required by SwiftLint pre-built binaries
+ARG SWIFT_IMAGE=swift:6.2-noble
 
-# builder image
-FROM ${BUILDER_IMAGE} AS builder
+FROM ${SWIFT_IMAGE}
+
+ARG SWIFTLINT_VERSION=0.63.1
+ARG TARGETARCH
+
+# Install dependencies and SwiftLint
 RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    libxml2-dev \
- && rm -r /var/lib/apt/lists/*
-
-RUN git clone https://github.com/realm/SwiftLint.git
-WORKDIR /SwiftLint
-# Defaul SwiftLint version - will be overwritten by the GH action
-ARG SWIFTLINT_VERSION=0.53.0
-RUN git checkout ${SWIFTLINT_VERSION}
-
-RUN swift package update
-ARG SWIFT_FLAGS="-c release -Xswiftc -static-stdlib -Xlinker -lCFURLSessionInterface -Xlinker -lCFXMLInterface -Xlinker -lcurl -Xlinker -lxml2 -Xswiftc -I. -Xlinker -fuse-ld=lld -Xlinker -L/usr/lib/swift/linux"
-RUN swift build ${SWIFT_FLAGS} --product swiftlint
-RUN mkdir -p /executables
-RUN install -v `swift build ${SWIFT_FLAGS} --show-bin-path`/swiftlint /executables
-
-# runtime image
-FROM ${RUNTIME_IMAGE}
-
-RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
     libcurl4 \
     libxml2 \
- && rm -r /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "amd64") \
+ && curl -fsSL "https://github.com/realm/SwiftLint/releases/download/${SWIFTLINT_VERSION}/swiftlint_linux_${ARCH}.zip" -o /tmp/swiftlint.zip \
+ && unzip /tmp/swiftlint.zip -d /usr/local/bin \
+ && rm /tmp/swiftlint.zip \
+ && chmod +x /usr/local/bin/swiftlint
 
-COPY --from=builder /usr/lib/libsourcekitdInProc.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libBlocksRuntime.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libdispatch.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libswiftCore.so /usr/lib
-COPY --from=builder /executables/* /usr/bin
-
-# Print Installed Swift & SwiftLint Version
-RUN swift --version
-RUN swiftlint version
+# Verify installations
+RUN swift --version && swiftlint version
