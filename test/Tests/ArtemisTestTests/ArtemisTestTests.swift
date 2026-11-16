@@ -1,4 +1,11 @@
-import XCTest
+import SwiftParser
+import SwiftSyntax
+import Testing
 @testable import ArtemisTestLib
 
-final class ArtemisTestTests: XCTestCase {}
+@Suite struct ArtemisTestTests {
+    /// Uses SwiftSyntax like the structural tests of the Artemis template, so that building this project needs it.
+    @Test func parsesSource() {
+        _ = Parser.parse(source: "struct ArtemisTest {}")
+    }
+}

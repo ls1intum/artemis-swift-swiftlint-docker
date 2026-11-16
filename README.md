@@ -19,13 +19,17 @@ docker pull ghcr.io/ls1intum/artemis-swift-swiftlint-docker:v1.0.0
 
 ## Cached dependencies
 
-The Swift test template of Artemis depends on [swift-junit](https://github.com/allegro/swift-junit) and
-[swift-ast](https://github.com/yanagiba/swift-ast). The image resolves the dependencies of `test/Package.swift` once, so
-that SwiftPM finds the clones in its cache and the builds of the exercises do not clone them again.
+The Swift test template of Artemis depends on [swift-syntax](https://github.com/swiftlang/swift-syntax). The image resolves the
+dependencies of `test/Package.swift` once, so that SwiftPM finds the clone in its cache and the builds of the exercises do not
+clone it again.
 
 `test/Package.swift` has to declare the same dependencies as `src/main/resources/templates/swift/test/Package.swift` in Artemis.
 Artemis compares both on every pull request that changes the template and builds the template in the image without network
 access every night.
+
+`legacy/Package.swift` is the test template of exercises that were created before Swift 6.2. It depends on
+[swift-junit](https://github.com/allegro/swift-junit) and [swift-ast](https://github.com/yanagiba/swift-ast), which the image
+caches as well, so that these exercises keep building without cloning them. Artemis does not check it.
 
 To change a dependency:
 
