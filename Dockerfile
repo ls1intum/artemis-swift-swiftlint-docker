@@ -22,3 +22,11 @@ RUN apt-get update && apt-get install -y \
 
 # Verify installations
 RUN swift --version && swiftlint version
+
+# Resolve the dependencies of the test template once. SwiftPM keeps the clones in its cache (~/.cache/org.swift.swiftpm),
+# so that the builds of the exercises find them there instead of cloning them from GitHub every time.
+# The project is a copy of the test template of Artemis (src/main/resources/templates/swift/test), see the README.
+WORKDIR /usr/src/artemis-test
+COPY test .
+RUN swift package resolve && cd / && rm -rf /usr/src/artemis-test
+WORKDIR /
