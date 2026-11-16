@@ -29,4 +29,9 @@ RUN swift --version && swiftlint version
 WORKDIR /usr/src/artemis-test
 COPY test .
 RUN swift package resolve && cd / && rm -rf /usr/src/artemis-test
+
+# The test template of exercises that were created before Swift 6.2 depends on other packages and keeps working offline.
+WORKDIR /usr/src/artemis-test-legacy
+COPY legacy .
+RUN swift package resolve && cd / && rm -rf /usr/src/artemis-test-legacy
 WORKDIR /
